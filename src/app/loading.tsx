@@ -1,6 +1,7 @@
+import RootLayout from './layout';
+
 export default function Loading() {
+    //TODO Add a custom loading skeleton
 
-	//TODO Add a custom loading skeleton
-
-	return <h1>Loading...</h1>
+    return <h1>Loading...</h1>;
 }
