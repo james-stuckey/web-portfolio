@@ -5,8 +5,6 @@ import Link from 'next/link';
 export default async function CurrentlyPlaying() {
     const { data, error, type } = await getCurrentlyPlaying();
 
-    const albumCoverSize = 80;
-
     if (!data) {
         return <></>;
         return (
@@ -37,7 +35,6 @@ export default async function CurrentlyPlaying() {
                     <div className="text-white">
                         <p className="text-gray-300">Now playing</p>
 
-                        
                         <p>
                             <Link
                                 href={data.item.songUrl}
@@ -64,7 +61,6 @@ export default async function CurrentlyPlaying() {
                                 </span>
                             );
                         })}
-                        
                     </div>
                 )}
             </div>

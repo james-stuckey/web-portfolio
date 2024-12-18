@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { TopTracksSkeleton } from './components/top-tracks-skeleton';
 import { fetchCurrentlyPlaying } from './lib/spotify';
 import TopTracks from './components/top-tracks';
-import CurrentlyPlaying from './components/currently-playing';
 import Loading from './loading';
 
 export default function Home() {

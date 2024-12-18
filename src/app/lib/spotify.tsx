@@ -148,7 +148,7 @@ export const fetchCurrentlyPlaying = async () => {
         `${SPOTIFY_API_BASE_URL}/me/player/currently-playing`,
         {
             headers: {
-                Authorization: `Bearer ${access_token}!`,
+                Authorization: `Bearer ${access_token}`,
             },
         },
     );

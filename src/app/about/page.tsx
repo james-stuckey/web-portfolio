@@ -15,7 +15,9 @@ export default function AboutPage() {
                             Tracks I Love Right Now
                         </h1>
                         <TopTracks trackCount={trackCount} />
-                        <CurrentlyPlaying />
+                        <div className="flex justify-center">
+                            <CurrentlyPlaying />
+                        </div>
                     </div>
                 </div>
             </Suspense>
