@@ -46,6 +46,18 @@ export const getAccessToken = async (): Promise<SpotifyAuthResponse> => {
         }),
     });
 
+    if (!response.ok) {
+        const errorResponse = await response.json();
+        console.error('Access Token Request Failed:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorResponse,
+        });
+        throw new Error(
+            `Access token request failed: ${response.statusText} (${response.status})`,
+        );
+    }
+
     return response.json();
 };
 
@@ -122,7 +134,7 @@ export const fetchUsersSavedTracks = async () => {
 
     const response = await fetch(`${SPOTIFY_API_BASE_URL}/me/tracks`, {
         headers: {
-            Authorization: `Bearer ${access_token}!`,
+            Authorization: `Bearer ${access_token}`,
         },
     });
 
@@ -168,13 +180,6 @@ export const fetchCurrentlyPlaying = async () => {
 export const getCurrentlyPlaying = async () => {
     const { data, type, error } = await fetchCurrentlyPlaying();
 
-    if (error) {
-        return {
-            data,
-            type,
-            error,
-        };
-    }
     const {
         item: track,
         timestamp,
