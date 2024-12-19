@@ -10,8 +10,9 @@ function Button({ handleClick, children }: ButtonProps) {
         <>
             <button
                 onClick={handleClick}
+                className="border border-gray text-white"
                 style={{
-                    border: '1px solid gray',
+                    // border: '1px solid gray',
                     padding: '6px 10px',
                     margin: '0 10px',
                     borderRadius: '3px',

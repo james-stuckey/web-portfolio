@@ -16,7 +16,11 @@ export default function AboutPage() {
                         </h1>
                         <TopTracks trackCount={trackCount} />
                         <div className="flex justify-center">
-                            <CurrentlyPlaying />
+                            <CurrentlyPlaying
+                                refreshInterval={10}
+                                showLastPlayed={true}
+                                displayWidgetWithNoData={false}
+                            />
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,8 @@
-'use client';
-
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import clsx from 'clsx';
+import Footer from './components/footer';
+import NavHeader from './components/header';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -28,59 +25,14 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const pathname = usePathname();
-
     return (
         <html lang="en">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-900`}
             >
-                <nav className="flex justify-end items-center space-x-3 px-24 gap-4 py-4 text-neutral-500">
-                    <Link
-                        href="/"
-                        className={clsx('hover:text-neutral-50', {
-                            'text-neutral-50 underline decoration-neutral-700 underline-offset-4': pathname === "/",
-                        })}
-                    >
-                        Home
-                    </Link>
-                    <Link href="/about" className="hover:text-neutral-50">
-                        About
-                    </Link>
-                    <Link href="/contact" className="hover:text-neutral-50">
-                        Contact
-                    </Link>
-                </nav>
+                <NavHeader />
                 <main>{children}</main>
-
-                <footer className="flex flex-row justify-end px-64">
-                    <div className="inline-flex border-t border-neutral-500 w-full">
-                        <div className="w-1/2 p-4 flex flex-col gap-2">
-                            <p className="text-neutral-500 hover:text-neutral-50">
-                                <Link href="/">Home</Link>
-                            </p>
-                            <p className="text-neutral-500 hover:text-neutral-50">
-                                <Link href="/about">About</Link>
-                            </p>
-                            <p className="text-neutral-500 hover:text-neutral-50">
-                                <Link href="/projecs">Projects</Link>
-                            </p>
-                        </div>
-                        <div className="w-1/2 p-4 flex flex-col gap-2">
-                            <p className="text-neutral-500 hover:text-neutral-50">
-                                <Link href="/">Github</Link>
-                            </p>
-                            <p className="text-neutral-500 hover:text-neutral-50 w-fit">
-                                <Link href="https://www.linkedin.com/in/jamesbstuckey/">
-                                    LinkedIn
-                                </Link>
-                            </p>
-                            <p className="text-neutral-500 hover:text-neutral-50 w-fit">
-                                <Link href="/contact">Contact Me</Link>
-                            </p>
-                        </div>
-                    </div>
-                </footer>
+                <Footer />
             </body>
         </html>
     );

@@ -1,4 +1,3 @@
-import { getAuthToken } from '@/app/lib/spotify';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {

@@ -3,11 +3,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePersistedState } from '../hooks/useLocalStorage';
 
-export default function CurrentlyPlaying() {
+export default function CurrentlyPlaying({
+    refreshInterval = 30,
+    showLastPlayed = false,
+    displayWidgetWithNoData = true,
+    hidden = false,
+}: {
+    refreshInterval: number;
+    displayWidgetWithNoData?: boolean;
+    showLastPlayed?: boolean;
+    hidden?: boolean;
+}) {
     const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<any>(null);
+    const [persistedLastPlayed, setPersistedLastPlayed] = usePersistedState(
+        'last-played',
+        '',
+    );
 
     const iconSize = 60;
 
@@ -15,12 +30,14 @@ export default function CurrentlyPlaying() {
         async function fetchCurrentlyPlayingSong() {
             try {
                 const response = await fetch('/api/currently-playing');
-                const { data, error, currentlyPlaying } = await response.json();
+                const { data, error } = await response.json();
+                if (data?.item) {
+                    setPersistedLastPlayed(data.item);
+                }
 
                 if (error) {
                     throw Error(error);
                 }
-
                 setData(data);
             } catch (err) {
                 console.error(err);
@@ -32,14 +49,17 @@ export default function CurrentlyPlaying() {
 
         fetchCurrentlyPlayingSong();
 
-        const ONE_SECOND = 1000;
         const interval = setInterval(
             fetchCurrentlyPlayingSong,
-            ONE_SECOND * 30,
+            refreshInterval * 1000,
         ); // Poll every x seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
-    }, []);
+    }, [refreshInterval]);
+
+    if (hidden) {
+        return null;
+    }
 
     if (loading) {
         return (
@@ -57,7 +77,7 @@ export default function CurrentlyPlaying() {
         );
     }
 
-    if (!data) {
+    if (!data && persistedLastPlayed && showLastPlayed) {
         // return <></>;
         return (
             <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-4 rounded-lg w-fit">
@@ -68,7 +88,24 @@ export default function CurrentlyPlaying() {
                         height={iconSize}
                         alt=""
                     />
-                    <h1 className="">Nothing is currently playing</h1>
+                    <p>Last played: {persistedLastPlayed.title}</p>
+                </div>
+            </div>
+        );
+    }
+    if (!data && (!persistedLastPlayed || !showLastPlayed)) {
+        if (!displayWidgetWithNoData) return <></>;
+
+        return (
+            <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-4 rounded-lg w-fit">
+                <div className="flex flex-row items-center gap-4">
+                    <Image
+                        src={'/spotify.png'}
+                        width={iconSize}
+                        height={iconSize}
+                        alt=""
+                    />
+                    <p>No current track data</p>
                 </div>
             </div>
         );
@@ -87,7 +124,12 @@ export default function CurrentlyPlaying() {
                 )}
                 {data?.item && (
                     <div className="text-white">
-                        <p className="text-gray-300">Now playing</p>
+                        <p className="text-gray-300">
+                            {data.is_playing
+                                ? "I'm currently playing:"
+                                : 'Paused for dramatic effect:'}
+                        </p>
+
                         <p>
                             <Link
                                 href={data.item.songUrl}

@@ -1,7 +1,6 @@
 import querystring from 'querystring';
-import { Track } from '../types';
+// import { Track } from '../types/spotify';
 import { SPOTIFY_REDIRECT_URI } from '../utils/spotify';
-import { error } from 'console';
 
 export const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 export const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -14,9 +13,7 @@ const basic = Buffer.from(
 const SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1';
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
-export const exchangeCodeForToken = async (
-    code: string,
-): Promise<SpotifyAuthResponse> => {
+export const exchangeCodeForToken = async (code: string): Promise<SpotifyAuthResponse> => {
     const response = await fetch(TOKEN_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -87,8 +84,11 @@ export async function getTopTracks(number: number) {
     // unstable_noStore();
     try {
         //get your most listened-to tracks
-        const { items } = await fetchTopTracks(number);
 
+        const response = await fetchTopTracks(number);
+        console.log(response);
+
+        const { items } = response;
         //format the JSON with map()
         const tracks = items?.map((track: Track, index: number) => {
             return {

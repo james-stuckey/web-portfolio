@@ -1,10 +1,11 @@
 import querystring from 'querystring';
 
-import { generateRandomString } from '../../utils/spotify';
+import { generateRandomString } from '../../../utils/spotify';
 
 export async function GET() {
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email user-top-read user-library-read user-read-currently-playing';
+    const scope =
+        'user-read-private user-read-email user-top-read user-library-read user-read-currently-playing';
 
     const redirect_uri = 'http://localhost:3000/api/callback'; // Callback endpoint
 

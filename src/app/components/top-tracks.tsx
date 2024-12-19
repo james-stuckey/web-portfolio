@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getTopTracks } from '../lib/spotify';
-import { Track } from '../types';
+import { Track } from '../types/spotify';
 import Image from 'next/image';
 
 export default async function TopTracks({
@@ -9,7 +9,6 @@ export default async function TopTracks({
     trackCount: number;
 }) {
     const tracks: Track[] = await getTopTracks(trackCount);
-
     const albumCoverSize = 120;
 
     return (

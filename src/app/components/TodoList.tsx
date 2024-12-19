@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import Button from './Button';
-import { Todo } from '../types';
+import { Todo } from '../types/spotify';
 
 function TodoItem({
     todo,
