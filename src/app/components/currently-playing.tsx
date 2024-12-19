@@ -1,40 +1,93 @@
+'use client';
+
 import Image from 'next/image';
-import { getCurrentlyPlaying } from '../lib/spotify';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-export default async function CurrentlyPlaying() {
-    const { data, error, type } = await getCurrentlyPlaying();
+export default function CurrentlyPlaying() {
+    const [data, setData] = useState<any>();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<any>(null);
 
-    if (!data) {
-        return <></>;
+    const iconSize = 60;
+
+    useEffect(() => {
+        async function fetchCurrentlyPlayingSong() {
+            try {
+                const response = await fetch('/api/currently-playing');
+                const { data, error, currentlyPlaying } = await response.json();
+
+                if (error) {
+                    throw Error(error);
+                }
+
+                setData(data);
+            } catch (err) {
+                console.error(err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchCurrentlyPlayingSong();
+
+        const ONE_SECOND = 1000;
+        const interval = setInterval(
+            fetchCurrentlyPlayingSong,
+            ONE_SECOND * 30,
+        ); // Poll every x seconds
+
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
+
+    if (loading) {
         return (
-            <>
-                <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-4 rounded-lg w-fit">
-                    <div className="flex flex-row items-center gap-4">
-                        <Image
-                            src={'/spotify.png'}
-                            width={50}
-                            height={40}
-                            alt=""
-                        />
-                        <h1 className="text-white">
-                            I'm not listening at the moment...
-                        </h1>
-                    </div>
+            <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-4 rounded-lg w-fit">
+                <div className="flex flex-row items-center gap-4">
+                    <Image
+                        src={'/spotify.png'}
+                        width={iconSize}
+                        height={iconSize}
+                        alt=""
+                    />
+                    <p>Loading...</p>
                 </div>
-            </>
+            </div>
         );
     }
+
+    if (!data) {
+        // return <></>;
+        return (
+            <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-4 rounded-lg w-fit">
+                <div className="flex flex-row items-center gap-4">
+                    <Image
+                        src={'/spotify.png'}
+                        width={iconSize}
+                        height={iconSize}
+                        alt=""
+                    />
+                    <h1 className="">Nothing is currently playing</h1>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 pt-2 pb-2 rounded-lg w-fit">
-            <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-col border-3 border-neutral-800 bg-neutral-600 px-6 py-2 rounded-lg w-fit">
+            <div className="flex flex-row items-center gap-6">
                 {data?.item && (
-                    <Image src={'/spotify.png'} width={50} height={40} alt="" />
+                    <Image
+                        src={'/spotify.png'}
+                        width={iconSize}
+                        height={iconSize}
+                        alt=""
+                    />
                 )}
                 {data?.item && (
                     <div className="text-white">
                         <p className="text-gray-300">Now playing</p>
-
                         <p>
                             <Link
                                 href={data.item.songUrl}
@@ -47,7 +100,7 @@ export default async function CurrentlyPlaying() {
                         </p>
                         {data.item.artistUrls.map((link, artistIndex) => {
                             return (
-                                <span key={`${artistIndex}-${data.item.id}`}>
+                                <span key={`${artistIndex}-${link.id}`}>
                                     <Link
                                         href={link}
                                         target="_blank"

@@ -1,8 +1,3 @@
-import { Suspense } from 'react';
-import { TopTracksSkeleton } from './components/top-tracks-skeleton';
-import { fetchCurrentlyPlaying } from './lib/spotify';
-import TopTracks from './components/top-tracks';
-import Loading from './loading';
 
 export default function Home() {
     const numberOfSongs = 5;
