@@ -1,0 +1,17 @@
+name: 'portfolio'
+services:
+  web:
+    container_name: portfolio
+    build: 
+      context: ./
+      target: base
+    image: portfolio
+    environment:
+      NODE_ENV: development
+    command: npm run dev
+    ports:
+      - '3000:3000'
+    
+    volumes:
+      - '.:/app'
+      - /app/node_modules
